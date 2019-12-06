@@ -21,7 +21,7 @@ class Command:
     def __init__(self, conn):
         self.new_sn = ''
         self.device = ''
-        self.c = conn
+        self.c = conn._tran
 
     def setdev(self, d):
         self.device = d.lower()

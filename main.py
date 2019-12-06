@@ -39,8 +39,6 @@ class CommandScreen(Screen):
         if c == 'dump':
             dumpui = Builder.load_file("dump.kv")
             ScriptUI.add_widget(dumpui)
-        else:
-            tprint('no UI change needed')
 
 
 class NineRiFt(App):
