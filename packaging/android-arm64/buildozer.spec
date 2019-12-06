@@ -10,7 +10,7 @@ package.name = NineRiFtPro
 package.domain = com.netrafire
 
 # (str) Source code where the main.py live
-source.dir = ../
+source.dir = ../../
 
 # (list) Source files to include (let empty to include all the files)
 source.include_exts = py,png,jpg,kv,atlas
@@ -105,10 +105,10 @@ android.minapi = 21
 #android.private_storage = True
 
 # (str) Android NDK directory (if empty, it will be automatically downloaded.)
-android.ndk_path = ../.android/ndk
+android.ndk_path = ../../.android/ndk
 
 # (str) Android SDK directory (if empty, it will be automatically downloaded.)
-android.sdk_path = ../.android/sdk
+android.sdk_path = ../../.android/sdk
 
 # (str) ANT directory (if empty, it will be automatically downloaded.)
 #android.ant_path =
@@ -168,7 +168,7 @@ android.whitelist = lib-dynload/termios.so
 #android.ouya.icon.filename = %(source.dir)s/data/ouya_icon.png
 
 # (str) XML file to include as an intent filters in <activity> tag
-android.manifest.intent_filters = ../intent-filter.xml
+android.manifest.intent_filters = ../../intent-filter.xml
 
 # (str) launchMode to set for the main activity
 #android.manifest.launch_mode = standard
@@ -197,7 +197,7 @@ android.logcat_filters = *:S python:D
 #android.copy_libs = 1
 
 # (str) The Android arch to build for, choices: armeabi-v7a, arm64-v8a, x86
-android.arch = armeabi-v7a
+android.arch = arm64-v8a
 
 #
 # Python for android (p4a) specific
@@ -207,7 +207,7 @@ android.arch = armeabi-v7a
 #p4a.source_dir =
 
 # (str) The directory in which python-for-android should look for your own build recipes (if any)
-p4a.local_recipes = ../.android/able/recipes
+p4a.local_recipes = ../../.android/able/recipes
 
 # (str) Filename to the hook for p4a
 #p4a.hook =
@@ -224,14 +224,14 @@ p4a.local_recipes = ../.android/able/recipes
 #
 
 # (str) Path to a custom kivy-ios folder
-#ios.kivy_ios_dir = ../kivy-ios
+#ios.kivy_ios_dir = ../../kivy-ios
 # Alternately, specify the URL and branch of a git checkout:
 ios.kivy_ios_url = https://github.com/kivy/kivy-ios
 ios.kivy_ios_branch = master
 
 # Another platform dependency: ios-deploy
 # Uncomment to use a custom checkout
-#ios.ios_deploy_dir = ../ios_deploy
+#ios.ios_deploy_dir = ../../ios_deploy
 # Or specify URL and branch
 ios.ios_deploy_url = https://github.com/phonegap/ios-deploy
 ios.ios_deploy_branch = 1.7.0
@@ -252,11 +252,11 @@ log_level = 2
 # (int) Display warning if buildozer is run as root (0 = False, 1 = True)
 warn_on_root = 1
 
-# (str) Path to build artifact storage, absolute or relative to spec file
-# build_dir = ./.buildozer
-
 # (str) Path to build output (i.e. .apk, .ipa) storage
-# bin_dir = ./bin
+bin_dir = ../bin64
+
+# (str) Path to build artifact storage, absolute or relative to spec file
+build_dir = ./.buildozer
 
 #    -----------------------------------------------------------------------------
 #    List as sections
