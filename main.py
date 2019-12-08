@@ -30,7 +30,7 @@ class MainWindow(BoxLayout):
 
 class CommandScreen(Screen):
     def setcmd(self,c):
-        self.cmd = c
+        tprint(c+' script selected')
         ScriptUI = self.ids['scriptspace']
         ScriptUI.clear_widgets()
         if c == 'changesn':
@@ -58,7 +58,6 @@ class NineRiFt(App):
 
         self.versel = BooleanProperty(False)
         self.hasextbms = BooleanProperty(False)
-        self.cmd = StringProperty()
 
         self.maxprogress = 100
         self.progress = 0
@@ -93,6 +92,7 @@ class NineRiFt(App):
     @sidethread
     def executecmd(self, c):
         if self.conn.state == 'connected':
+            tprint(c+' execute')
             if c is 'lock':
                 self.com.lock()
             if c is 'unlock':

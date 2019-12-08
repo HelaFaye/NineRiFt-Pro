@@ -124,6 +124,7 @@
             BoxLayout:
                 orientation: 'vertical'
                 Spinner:
+                    id: scriptsel
                     text: 'Script'
                     values: ['lock', 'unlock', 'reboot', 'powerdown', 'sniff', 'dump', 'info', 'changesn']
                     on_text: root.setcmd(self.text)
@@ -138,7 +139,7 @@
             size_hint_y: .10
             Button:
                 text: "Execute"
-                on_press: app.executecmd(app.cmd)
+                on_press: app.executecmd(scriptsel.text)
 
 <MainWindow>:
     orientation: "vertical"
