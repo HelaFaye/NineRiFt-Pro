@@ -48,11 +48,15 @@ class Client(EventDispatcher):
                 from mocklink import MockLink
                 link = MockLink()
 
-            link.__enter__()
+            if link != None:
+                link.__enter__()
+                # This is split into two parts due to some link implementations
+                # (namely droidble) requiring some initalization in main thread...
+                self._connect_inner(link)
+            else:
+                tprint('select interface and protocol first')
+                self.update_state('disconnected')
 
-            # This is split into two parts due to some link implementations
-            # (namely droidble) requiring some initalization in main thread...
-            self._connect_inner(link)
         except Exception as exc:
             self.update_state('disconnected')
             self.dispatch('on_error', repr(exc))
