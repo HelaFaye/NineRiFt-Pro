@@ -1,10 +1,9 @@
 kivymd
 bleak
 kivy
-Cython
+kivymd
 docutils
 requests
 twisted
 image
 pyserial
-
