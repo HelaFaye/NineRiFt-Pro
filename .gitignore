@@ -116,9 +116,4 @@ venv.bak/
 .android/bin
 .android/ndk
 .android/sdk
-.android/.buildozer
-/requirements.txt
-/linux.spec
-/mac.spec
-/windows.spec
 /packaging/ninerift-1a.svg
