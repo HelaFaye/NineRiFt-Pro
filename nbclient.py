@@ -42,8 +42,12 @@ class Client(EventDispatcher):
                 from py9b.link.tcp import TCPLink
                 link = TCPLink()
             elif self.link == 'serial':
-                from py9b.link.serial import SerialLink
-                link = SerialLink(timeout=1.0)
+                if platform == 'android':
+                    from py9b.link.droidserial import SerialLink
+                    link = SerialLink(timeout=1.0)
+                else:
+                    from py9b.link.serial import SerialLink
+                    link = SerialLink(timeout=1.0)
             elif self.link == 'mock':
                 from mocklink import MockLink
                 link = MockLink()
