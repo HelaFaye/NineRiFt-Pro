@@ -6,7 +6,7 @@ from py9b.command.regio import ReadRegs, WriteRegs
 from kivy.utils import platform
 from kivy.event import EventDispatcher
 from kivy.clock import mainthread
-from kivy.properties import NumericProperty, BooleanProperty, StringProperty, ObjectProperty
+from kivy.properties import BooleanProperty, StringProperty, ObjectProperty
 from utils import tprint, specialthread
 import asyncio
 
