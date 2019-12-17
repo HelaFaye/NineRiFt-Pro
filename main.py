@@ -18,7 +18,7 @@ from kivy.utils import platform
 from kivy.properties import StringProperty, BooleanProperty, Property
 from kivy.lang import Builder
 
-from utils import tprint, sidethread
+from utils import tprint, sidethread, specialthread
 from fwupd import FWUpd
 from fwget import FWGet
 from nbcmd import Command
@@ -28,9 +28,14 @@ from nbclient import Client
 class MainWindow(BoxLayout):
     pass
 
+class FlashScreen(Screen):
+    def setprog(self, prog, mprog):
+        ProgBar = self.ids['fwprogbar']
+        ProgBar.value = prog
+        ProgBar.max = mprog
+
 class CommandScreen(Screen):
     def setcmd(self,c):
-        tprint(c+' script selected')
         ScriptUI = self.ids['scriptspace']
         ScriptUI.clear_widgets()
         if c == 'changesn':
@@ -58,16 +63,14 @@ class NineRiFt(App):
 
         self.versel = BooleanProperty(False)
         self.hasextbms = BooleanProperty(False)
-
-        self.maxprogress = 100
-        self.progress = 0
+        tprint("Don't forget to post a review on the Play Store")
 
     def build(self):
         self.initialize()
         self.mainwindow = MainWindow()
         return self.mainwindow
 
-    @sidethread
+    @specialthread
     def connection_toggle(self):
         if self.conn.state == 'connected':
             self.conn.disconnect()
@@ -187,21 +190,20 @@ class NineRiFt(App):
                 print('no ExtBMS entry to remove')
         return values
 
-    def flash_progress(self, var):
-        if var is 'prog':
-            return self.progress
-        if var is 'max':
-            return self.maxprogress
-
     def on_stop(self):
         self.conn.disconnect()
 
+    @sidethread
     def fwupd_func(self, chooser):
         if len(chooser.selection) != 1:
             tprint('Choose file to flash')
             return
         self.fwupd.Flash(chooser.selection[0])
 
+    @mainthread
+    def setprogbar(self, prog, maxprog):
+        CommandScreen.setprog(prog, maxprog)
 
 if __name__ == "__main__":
     NineRiFt().run()
+    tprint("Don't forget to post a review")

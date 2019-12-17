@@ -5,6 +5,8 @@ try:
 except:
     pass
 
+th = Thread()
+
 # toast or print
 def tprint(msg):
     Logger.info('tprint: %s' % (msg,))
@@ -18,9 +20,22 @@ def sidethread(fn):
     Essentially reverse of @mainthread kivy decorator - runs function/method in
     a separate thread
     """
-
-    # TODO add option to only allow a single running instance
     def wrapped(*args, **kwargs):
-        th = Thread(target=fn, args=args, kwargs=kwargs)
-        th.start()
+        global th
+        if not th.is_alive():
+            th = Thread(target=fn, args=args, kwargs=kwargs)
+            th.start()
+        else:
+            tprint('sidethread is already active')
+    return wrapped
+
+def specialthread(fn):
+    """
+    Essentially reverse of @mainthread kivy decorator - runs function/method in
+    a separate thread
+    """
+    def wrapped(*args, **kwargs):
+        th1 = Thread(target=fn, args=args, kwargs=kwargs)
+        th1.start()
+
     return wrapped

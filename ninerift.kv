@@ -59,9 +59,10 @@
             rows: 2
             size_hint_y: .20
             ProgressBar:
+                id: fwprogbar
                 size_hint_y: .3
-                value: app.progress
-                max: app.maxprogress
+                value: 0
+                max: 100
             Button:
                 disabled: app.conn.state in ('disconnected',)
                 size_hint_y: .7
@@ -166,7 +167,7 @@
                 orientation: 'horizontal'
                 Spinner:
                     text: 'Interface'
-                    values: ['BLE', 'TCP', 'Serial']
+                    values: ['BLE', 'TCP', 'Serial', 'Mock']
                     on_text: app.conn.link = self.text.lower()
                     font_size: '12sp'
                     height: '12sp'

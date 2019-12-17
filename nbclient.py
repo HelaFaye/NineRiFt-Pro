@@ -7,7 +7,7 @@ from kivy.utils import platform
 from kivy.event import EventDispatcher
 from kivy.clock import mainthread
 from kivy.properties import NumericProperty, BooleanProperty, StringProperty, ObjectProperty
-from utils import tprint, sidethread
+from utils import tprint, specialthread
 import asyncio
 
 class Client(EventDispatcher):
@@ -24,7 +24,7 @@ class Client(EventDispatcher):
         super(Client, self).__init__()
         self.loop = None
 
-    @mainthread
+    @specialthread
     def connect(self):
         self.update_state('connecting')
         try:
@@ -72,7 +72,7 @@ class Client(EventDispatcher):
             self.dispatch('on_error', repr(exc))
             raise exc
 
-    @sidethread
+    @specialthread
     def _connect_inner(self, link):
         try:
             if not self.address:
@@ -116,7 +116,7 @@ class Client(EventDispatcher):
         print('Current state:', state)
         self.state = state
 
-    @sidethread
+    @specialthread
     def disconnect(self):
         if self.state == 'connected':
             self.update_state('disconnecting')

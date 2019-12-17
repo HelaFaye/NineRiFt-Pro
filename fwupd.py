@@ -10,22 +10,22 @@ from py9b.command.update import *
 from kivy.utils import platform
 from kivy.clock import mainthread
 from kivy.event import EventDispatcher
-from kivy.properties import NumericProperty, BooleanProperty, StringProperty, ObjectProperty
-from utils import tprint, sidethread
+from kivy.properties import BooleanProperty, StringProperty, ObjectProperty
+from utils import tprint, specialthread
 
 
 class FWUpd(EventDispatcher):
-    maxprogress = NumericProperty(100)
-    progress = NumericProperty(0)
     device = StringProperty('')
     lock = BooleanProperty(True)
 
     def __init__(self, conn):
         self.devices = {'ble': BT.BLE, 'drv': BT.ESC, 'bms': BT.BMS, 'extbms': BT.EXTBMS}
         self.protocols = {'xiaomi': XiaomiTransport, 'ninebot': NinebotTransport}
-        self.PING_RETRIES = 5
+        self.PING_RETRIES = 3
         self.nolock = False
         self.conn = conn
+        self.maxprogress = 100
+        self.progress = 0
 
     def checksum(self, s, data):
         for c in data:
@@ -90,7 +90,7 @@ class FWUpd(EventDispatcher):
         tprint('update finished')
         return True
 
-    @sidethread
+    @specialthread
     def Flash(self, fwfilep):
         if self.device == 'extbms' and self.conn.transport != 'ninebot':
             tprint('Only Ninebot supports External BMS !')
@@ -107,5 +107,4 @@ class FWUpd(EventDispatcher):
 
     @mainthread
     def update_progress(self, progress, maxprogress):
-        self.progress = progress
-        self.maxprogress = maxprogress
+        setprogbar(progress, maxprogress)
