@@ -202,7 +202,7 @@ class NineRiFt(App):
 
     @mainthread
     def setprogbar(self, prog, maxprog):
-        CommandScreen.setprog(prog, maxprog)
+        FlashScreen.setprog(prog, maxprog)
 
 if __name__ == "__main__":
     NineRiFt().run()
