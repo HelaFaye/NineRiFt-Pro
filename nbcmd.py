@@ -22,6 +22,7 @@ class Command:
         self.new_sn = ''
         self.device = ''
         self.conn = conn
+        self.old_sn = ''
 
     def setdev(self, d):
         self.device = d.lower()
@@ -124,21 +125,12 @@ class Command:
             tprint('No external BMS found', repr(exc))
 
     def changesn(self, new_sn):
-        from py9b.command.mfg import WriteSN, CalcSNAuth
 
         tran = self.conn._tran
-        old_sn = tran.execute(ReadRegs(BT.ESC, 0x10, "14s"))[0].decode()
-        tprint("Old S/N:", old_sn)
-
-        uid3 = tran.execute(ReadRegs(BT.ESC, 0xDE, "<L"))[0]
-        tprint("UID3: %08X" % (uid3))
-
-        auth = CalcSnAuth(old_sn, new_sn, uid3)
-        # auth = 0
-        tprint("Auth: %08X" % (auth))
+        self.old_sn = tran.execute(ReadRegs(BT.ESC, 0x10, "14s"))[0].decode()
 
         try:
-            tran.execute(WriteSN(BT.ESC, new_sn.encode('utf-8'), auth))
+            tran.execute(WriteRegs(BT.ESC, 0x10, "<H", new_sn.encode('utf-8')))
             tprint("OK")
         except LinkTimeoutException:
             tprint("Timeout !")
@@ -147,7 +139,7 @@ class Command:
         tran.execute(WriteRegs(BT.ESC, 0x78, "<H", 0x01))
         time.sleep(3)
 
-        old_sn = tran.execute(ReadRegs(BT.ESC, 0x10, "14s"))[0]
+        self.old_sn = tran.execute(ReadRegs(BT.ESC, 0x10, "14s"))[0]
         tprint("Current S/N:", old_sn)
 
     def pp_distance(dist):
