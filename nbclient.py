@@ -54,20 +54,21 @@ class Client(EventDispatcher):
 
             if link != None:
                 link.__enter__()
-                self.update_state('connected')
                 # This is split into two parts due to some link implementations
                 # (namely droidble) requiring some initalization in main thread...
                 self._connect_inner(link)
                 time.sleep(3)
-
-
+                if self.transport != '' and self.link != '':
+                    self.update_state('connected')
             elif link == None:
                     tprint('select interface and protocol first')
                     self.update_state('disconnected')
+            else:
+                tprint('Connection unsuccessful. Try again?')
+                self.update_state('disconnected')
 
         except Exception as exc:
             self.update_state('disconnected')
-            tprint('Connection unsuccessful. Try again?')
             self.dispatch('on_error', repr(exc))
             raise exc
 
@@ -79,7 +80,6 @@ class Client(EventDispatcher):
                     ports = link.scan()
                     if not ports:
                         raise Exception('No devices found')
-                        self.update_state('disconnected')
                     if isinstance(ports[0], tuple):
                         self.address = ports[0][1]
                     else:
@@ -120,7 +120,10 @@ class Client(EventDispatcher):
     def disconnect(self):
         if self.state == 'connected':
             self.update_state('disconnecting')
-            self._link.close()
+            try:
+                self._link.close()
+            except:
+                pass
             self.update_state('disconnected')
 
     def on_error(self, *args):
