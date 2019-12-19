@@ -2,7 +2,7 @@
 	path = vendor/py9b
 	url = https://github.com/Slinger360/py9b.git
 [submodule "vendor/kivy-android-serial"]
-	path = vendor/kivy-android-serial
+	path = .android/kivy-android-serial
 	url = https://github.com/frmdstryr/kivy-android-serial.git
 [submodule ".android/able"]
 	path = .android/able
