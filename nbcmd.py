@@ -124,6 +124,7 @@ class Command:
         self.old_sn = tran.execute(ReadRegs(BT.ESC, 0x10, "14s"))[0].decode()
 
         try:
+            # Write NewSN to ESC
             tran.execute(WriteRegs(BT.ESC, 0x10, "<H", new_sn.encode('utf-8')))
             tprint("OK")
         except LinkTimeoutException:
