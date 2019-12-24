@@ -135,7 +135,10 @@ class Command:
         time.sleep(3)
 
         self.old_sn = tran.execute(ReadRegs(BT.ESC, 0x10, "14s"))[0]
-        tprint("Current S/N:", old_sn)
+        if self.old_sn is new_sn:
+            tprint('SN Change Successful')
+        else:
+            tprint('Did you flash DRV777 first?')
 
     def pp_distance(dist):
         if dist < 1000:
