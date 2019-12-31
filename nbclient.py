@@ -24,6 +24,7 @@ class Client(EventDispatcher):
         super(Client, self).__init__()
         self.loop = None
 
+    @mainthread
     def connect(self):
         self.update_state('connecting')
         try:
@@ -58,7 +59,7 @@ class Client(EventDispatcher):
                 self._connect_inner(link)
                 time.sleep(3)
                 if self.link == 'ble':
-                    if link.ble_device != None or link._client != None:
+                    if link:
                         self.update_state('connected')
                 else:
                     self.update_state('connected')
