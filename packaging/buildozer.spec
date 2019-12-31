@@ -36,7 +36,7 @@ version = 1.7
 
 # (list) Application requirements
 # comma separated e.g. requirements = sqlite3,kivy
-requirements = python3, kivy, android, requests, openssl, kivymd, able, pyjnius==6553ad4, pyserial
+requirements = python3, kivy, android, requests, openssl, kivymd, able, pyjnius, pyserial, usb4a, usbserial4a
 # (str) Custom source folders for requirements
 # Sets custom source for any requirements with recipes
 # requirements.source.kivy = ../../kivy
@@ -105,7 +105,7 @@ android.minapi = 21
 #android.private_storage = True
 
 # (str) Android NDK directory (if empty, it will be automatically downloaded.)
-#android.ndk_path = ../../.android/ndk
+#android.ndk_path = ../.android/ndk
 
 # (str) Android SDK directory (if empty, it will be automatically downloaded.)
 android.sdk_path = ../.android/sdk
@@ -158,7 +158,7 @@ android.whitelist = lib-dynload/termios.so
 #android.add_activites = com.example.ExampleActivity
 
 # (str) python-for-android branch to use, defaults to master
-p4a.branch = release-2019.10.06
+#p4a.branch = master
 
 # (str) OUYA Console category. Should be one of GAME or APP
 # If you leave this blank, OUYA support will not be enabled
@@ -181,7 +181,7 @@ android.manifest.intent_filters = ../intent-filter.xml
 
 # (bool) Indicate whether the screen should stay on
 # Don't forget to add the WAKE_LOCK permission if you set this to True
-android.wakelock = True
+#android.wakelock = True
 
 # (list) Android application meta-data to set (key=value format)
 #android.meta_data =
@@ -197,14 +197,14 @@ android.logcat_filters = *:S python:D
 #android.copy_libs = 1
 
 # (str) The Android arch to build for, choices: armeabi-v7a, arm64-v8a, x86
-android.arch = arm64-v8a
+android.arch = armeabi-v7a
 
 #
 # Python for android (p4a) specific
 #
 
 # (str) python-for-android git clone directory (if empty, it will be automatically cloned from github)
-#p4a.source_dir = ~/.buildozer/android/platform/python-for-android
+#p4a.source_dir =
 
 # (str) The directory in which python-for-android should look for your own build recipes (if any)
 p4a.local_recipes = ../.android/able/recipes
