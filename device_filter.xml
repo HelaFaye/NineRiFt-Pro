@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    <!-- CP210 -->
+    <usb-device vendor-id="10C4" product-id="EA60" />
+    <usb-device vendor-id="10C4" product-id="EA61" />
+    <usb-device vendor-id="10C4" product-id="EA63" />
+    <!-- CH340 -->
+    <usb-device vendor-id="1A86" product-id="7584" />
+    <!-- ATMega USB to UART -->
+    <usb-device vendor-id="03EB" product-id="2FEE" />
+    <usb-device vendor-id="03EB" product-id="2FEF" />
+    <usb-device vendor-id="03EB" product-id="2FF3" />
+    <usb-device vendor-id="03EB" product-id="2FF0" />
+    <usb-device vendor-id="03EB" product-id="2FF4" />
+    <!-- ATMega USB to UART (Microchip)-->
+    <usb-device vendor-id="04D8" product-id="EDB5" />
+</resources>
