@@ -4,7 +4,8 @@ THIS TOOL IS ONLY FOR USE ON DEVICES YOU OWN!!! It is still being added to but i
 
 This application is written in Python3. To install required libraries, run the following two commands:
 
-git clone --recursive https://github.com/slinger360/NineRiFt-kivy.git
+git clone --recursive https://github.com/slinger360/NineRiFt-Pro.git
+(log in to contributor account)
 pip install -r requirements.txt
 
 To build for Android read up on Buildozer.
@@ -47,3 +48,6 @@ SNSC dashboards cannot be flashed without either TCP-Serial or Serial interface.
 
 
 If you appreciate my work, be sure to donate at https://PayPal.com/dilsha21 or any of the other options listed on my GitHub.
+
+
+Thank you to Informatic for their contributions to Bleak support, Python3 migration, and converting the UI to the .kv format
