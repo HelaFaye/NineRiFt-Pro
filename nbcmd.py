@@ -84,21 +84,23 @@ class Command:
             tprint(desc, repr(exc))
 
     def bms_info(self, tran, dev):
-        tprint('BMS S/N:         %s' % tran.execute(ReadRegs(dev, 0x10, "14s"))[0].decode())
+        #tprint('BMS S/N:         %s' % tran.execute(ReadRegs(dev, 0x10, "14s"))[0].decode())
         print_reg(tran, 'BMS Version:     %04x', 0x17, "<H", dev=dev)
-        print_reg(tran, 'BMS charge:      %d%%', 0x32, "<H", dev=dev)
-        print_reg(tran, 'BMS full cycles: %d', 0x1b, "<H", dev=dev)
-        print_reg(tran, 'BMS charges:     %d', 0x1c, "<H", dev=dev)
-        print_reg(tran, 'BMS health:      %d%%', 0x3b, "<H", dev=dev)
-        tprint('BMS current:     %.2fA' % (tran.execute(ReadRegs(dev, 0x33, "<h"))[0] / 100.0,))
-        tprint('BMS voltage:     %.2fV' % (tran.execute(ReadRegs(dev, 0x34, "<h"))[0] / 100.0,))
+        #print_reg(tran, 'BMS charge:      %d%%', 0x32, "<H", dev=dev)
+        #print_reg(tran, 'BMS full cycles: %d', 0x1b, "<H", dev=dev)
+        #print_reg(tran, 'BMS charges:     %d', 0x1c, "<H", dev=dev)
+        #print_reg(tran, 'BMS health:      %d%%', 0x3b, "<H", dev=dev)
+        #tprint('BMS current:     %.2fA' % (tran.execute(ReadRegs(dev, 0x33, "<h"))[0] / 100.0,))
+        #tprint('BMS voltage:     %.2fV' % (tran.execute(ReadRegs(dev, 0x34, "<h"))[0] / 100.0,))
 
     def info(self):
         tran = self.conn._tran
         tprint('ESC S/N:       %s' % tran.execute(ReadRegs(BT.ESC, 0x10, "14s"))[0].decode())
         #tprint('ESC PIN:       %s' % tran.execute(ReadRegs(BT.ESC, 0x17, "6s"))[0].decode())
-        #print_reg(tran, 'BLE Version:   %04x', 0x68, "<H")
-        #print_reg(tran, 'ESC Version:   %04x', 0x1A, "<H")
+        time.sleep(1)
+        print_reg(tran, 'BLE Version:   %04x', 0x68, "<H")
+        time.sleep(1)
+        print_reg(tran, 'ESC Version:   %04x', 0x1A, "<H")
         #print_reg(tran, 'Error code:    %d', 0x1B, "<H")
         #print_reg(tran, 'Warning code:  %d', 0x1C, "<H")
         #tprint('Total mileage: %s' % pp_distance(tran.execute(ReadRegs(BT.ESC, 0x29, "<L"))[0]))
@@ -106,17 +108,21 @@ class Command:
         #tprint('Total riding:  %s' % pp_time(tran.execute(ReadRegs(BT.ESC, 0x34, "<L"))[0]))
         #tprint('Chassis temp:  %d C' % (tran.execute(ReadRegs(BT.ESC, 0x3e, "<H"))[0] / 10.0,))
 
-        #try:
-        #    tprint(' *** Internal BMS ***')
-        #    bms_info(tran, BT.BMS)
-        #except Exception as exc:
-        #    tprint('No internal BMS found', repr(exc))
+        try:
+            time.sleep(1)
+            tprint(' *** Internal BMS ***')
+            bms_info(tran, BT.BMS)
+        except Exception as exc:
+            time.sleep(1)
+            tprint('No internal BMS found', repr(exc))
 
-        #try:
-        #    tprint(' *** External BMS ***')
-        #    bms_info(tran, BT.EXTBMS)
-        #except Exception as exc:
-        #    tprint('No external BMS found', repr(exc))
+        try:
+            time.sleep(1)
+            tprint(' *** External BMS ***')
+            bms_info(tran, BT.EXTBMS)
+        except Exception as exc:
+            time.sleep(1)
+            tprint('No external BMS found', repr(exc))
 
     def changesn(self, new_sn):
 
