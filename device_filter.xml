@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <resources>
-    <!-- CP210 -->
+    <!-- CP2102 -->
     <usb-device vendor-id="10C4" product-id="EA60" />
     <usb-device vendor-id="10C4" product-id="EA61" />
     <usb-device vendor-id="10C4" product-id="EA63" />
@@ -15,4 +15,12 @@
     <usb-device vendor-id="03EB" product-id="2FF4" />
     <!-- ATMega USB to UART (Microchip)-->
     <usb-device vendor-id="04D8" product-id="EDB5" />
+    <!-- FT232R -->
+    <usb-device vendor-id="0403" product-id="6001" />
+    <!-- Macanique FT232R -->
+    <usb-device vendor-id="1781" product-id="09AF" />
+    <!-- RT FT232RL -->
+    <usb-device vendor-id="2100" product-id="9E5F" />
+    <!-- Prolific -->
+    <usb-device vendor-id="067B" product-id="2303" />
 </resources>
