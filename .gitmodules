@@ -4,6 +4,3 @@
 [submodule ".android/able"]
 	path = .android/able
 	url = https://github.com/b3b/able.git
-[submodule "kivy-android-serial"]
-	path = .android/kivy-android-serial
-	url = https://github.com/frmdstryr/kivy-android-serial.git
