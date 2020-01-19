@@ -131,7 +131,7 @@ class Command:
 
         try:
             # Write NewSN to ESC
-            tran.execute(WriteRegs(BT.ESC, 0x10, "<H", new_sn.encode('utf-8')))
+            tran.execute(WriteRegs(BT.ESC, 0x10, "<H", new_sn.encode()))
             tprint("OK")
         except LinkTimeoutException:
             tprint("Timeout !")
