@@ -63,7 +63,18 @@ class Client(EventDispatcher):
                 self._connect_inner(link)
                 time.sleep(3)
                 if self.link == 'ble':
-                        self.update_state('connected')
+                    if platform == 'android':
+                        if self._link and self._link.device is not None:
+                            self.update_state('connected')
+                        else:
+                            self.update_state('disconnected')
+                            print('BLE device not found')
+                    else:
+                        if self._link and self._link._client is not None:
+                            self.update_state('connected')
+                        else:
+                            self.update_state('disconnected')
+                            print('BLE client not found')
                 elif self.link == 'tcp':
                     if link.connected:
                         self.update_state('connected')
