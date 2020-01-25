@@ -64,7 +64,7 @@ class Client(EventDispatcher):
                 time.sleep(3)
                 if self.link == 'ble':
                     if platform == 'android':
-                        if link.connected.is_set():
+                        if link._adapter is not None:
                             print('Device found')
                             self.update_state('connected')
                         else:
