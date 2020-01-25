@@ -64,7 +64,7 @@ class Client(EventDispatcher):
                 time.sleep(3)
                 if self.link == 'ble':
                     if platform == 'android':
-                        if self._link and self._link.device is not None:
+                        if link.device is not None:
                             self.update_state('connected')
                         else:
                             self.update_state('disconnected')
