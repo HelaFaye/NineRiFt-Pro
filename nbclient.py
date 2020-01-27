@@ -65,44 +65,12 @@ class Client(EventDispatcher):
                 tprint('select protocol first')
 
             if self.transport is not '' and self.link is not None:
-
                 link.__enter__()
                 # This is split into two parts due to some link implementations
                 # (namely droidble) requiring some initalization in main thread...
                 self._connect_inner(link)
-                time.sleep(1)
-                if self.link == 'ble':
-                    if platform is 'android':
-                        time.sleep(4)
-                        if link.device is not None:
-                            self.update_state('connected')
-                        else:
-                            tprint('No BLE device found')
-                            self.disconnect()
-                    elif platform is not 'android':
-                        time.sleep(2)
-                        if link._client is not None:
-                            self.update_state('connected')
-                        else:
-                            tprint('No BLE device found.')
-                            self.disconnect()
-                elif self.link == 'tcp':
-                    time.sleep(2)
-                    if link.connected:
-                        self.update_state('connected')
-                    else:
-                        tprint('No TCP device found')
-                        self.disconnect()
-                elif link.device is not None:
-                    print('other')
-                    time.sleep(1)
-                    self.update_state('connected')
-                else:
-                    tprint('No link')
-                    self.disconnect()
             else:
                 tprint('One or more parameters are not set')
-                self.disconnect()
 
         except Exception as exc:
             self.dispatch('on_error', repr(exc))
@@ -139,6 +107,11 @@ class Client(EventDispatcher):
 
             self._tran = transport
             self._link = link
+
+            if self._tran is not None and self._link is not None:
+                self.update_state('connected')
+            else:
+                self.disconnect
 
             return transport
 
