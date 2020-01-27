@@ -23,7 +23,7 @@ class Client(EventDispatcher):
         self.register_event_type('on_error')
         super(Client, self).__init__()
         self.loop = None
-        self.stay_connected = True
+        self.stay_connected = False
 
     @mainthread
     def connect(self):
@@ -56,53 +56,62 @@ class Client(EventDispatcher):
                 from mocklink import MockLink
                 link = MockLink()
 
-            if link != None:
+            elif self.link == None:
+                tprint('select interface first')
+                self.disconnect()
+
+            if self.transport is '':
+                self.disconnect()
+                tprint('select protocol first')
+
+            if self.transport is not '' and self.link is not None:
+
                 link.__enter__()
                 # This is split into two parts due to some link implementations
                 # (namely droidble) requiring some initalization in main thread...
                 self._connect_inner(link)
-                time.sleep(3)
+                time.sleep(1)
                 if self.link == 'ble':
-                    if platform == 'android':
-                        if link._adapter is not None:
-                            print('Device found')
+                    if platform is 'android':
+                        time.sleep(4)
+                        if link.device is not None:
                             self.update_state('connected')
                         else:
-                            self.update_state('disconnected')
-                            print('BLE device not found')
-                    else:
+                            tprint('No BLE device found')
+                            self.disconnect()
+                    elif platform is not 'android':
+                        time.sleep(2)
                         if link._client is not None:
-                            print('Device found')
                             self.update_state('connected')
                         else:
-                            self.update_state('disconnected')
-                            print('BLE client not found')
+                            tprint('No BLE device found.')
+                            self.disconnect()
                 elif self.link == 'tcp':
+                    time.sleep(2)
                     if link.connected:
                         self.update_state('connected')
                     else:
-                        self.update_state('disconnected')
-                        print('Socket not connected')
+                        tprint('No TCP device found')
+                        self.disconnect()
+                elif link.device is not None:
+                    print('other')
+                    time.sleep(1)
+                    self.update_state('connected')
                 else:
-                    if link.connected.is_set():
-                        self.update_state('connected')
-
-            elif link == None:
-                    tprint('select interface and protocol first')
-                    self.update_state('disconnected')
+                    tprint('No link')
+                    self.disconnect()
             else:
-                tprint('Connection unsuccessful. Try again?')
-                self.update_state('disconnected')
+                tprint('One or more parameters are not set')
+                self.disconnect()
 
         except Exception as exc:
-            self.update_state('disconnected')
             self.dispatch('on_error', repr(exc))
-
+            raise exc
 
     @specialthread
     def _connect_inner(self, link):
         try:
-            if not self.address:
+            if self.address is '':
                 if platform!='android':
                     ports = link.scan()
                     if not ports:
@@ -112,7 +121,7 @@ class Client(EventDispatcher):
                     else:
                         self.address = ports[0]
                 link.open(self.address)
-            elif self.address:
+            elif self.address is not '':
                 link.open(self.address)
 
             transport = None
@@ -134,7 +143,6 @@ class Client(EventDispatcher):
             return transport
 
         except Exception as exc:
-            self.update_state('disconnected')
             self.dispatch('on_error', repr(exc))
             raise exc
 
@@ -144,19 +152,17 @@ class Client(EventDispatcher):
         self.state = state
 
     def disconnect(self):
-        if self.state == 'connected':
-            self.update_state('disconnecting')
-            try:
-                self._link.close()
-            except:
-                pass
-            self.update_state('disconnected')
+        self.update_state('disconnecting')
+        try:
+            self._link.close()
+        except:
+            pass
+        self.address = ''
+        self.update_state('disconnected')
 
     def on_error(self, *args):
-        if self.link is 'ble':
-            self.update_state('disconnected')
-            self.disconnect()
-            if self.stay_connected:
-                self.connect()
+        self.disconnect()
+        if self.stay_connected:
+            self.connect()
         # Required for event handling dispatch
         pass
