@@ -21,8 +21,8 @@ class Command:
     def __init__(self, conn):
         self.new_sn = ''
         self.device = ''
+        self.snmeth = ''
         self.conn = conn
-        self.old_sn = ''
 
     def setdev(self, d):
         self.device = d.lower()
@@ -30,7 +30,11 @@ class Command:
 
     def setnewsn(self, p):
         self.new_sn = p
-        tprint(self.new_sn+' input for newsn')
+        tprint(self.new_sn+' input for NewSN')
+
+    def setsnmethod(self, m):
+        self.snmeth = m
+        tprint(self.snmeth+' selected for ChangeSN method')
 
     def dump(self, device):
         dev = {
@@ -126,14 +130,29 @@ class Command:
 
     def changesn(self, new_sn):
         tran = self.conn._tran
-        self.old_sn = tran.execute(ReadRegs(BT.ESC, 0x10, "14s"))[0].decode()
+        old_sn = tran.execute(ReadRegs(BT.ESC, 0x10, "14s"))[0].decode()
 
-        try:
-            # Write NewSN to ESC
-            tran.execute(WriteRegs(BT.ESC, 0x10, "<H", bytes(new_sn.encode())))
-            tprint("OK")
-        except LinkTimeoutException:
-            tprint("Timeout !")
+        if self.snmeth is 'dauth':
+            uid3 = tran.execute(ReadRegs(dev, 0xDE, "<L"))[0]
+            print("UID3: %08X" % (uid3))
+
+            auth = CalcSnAuth(old_sn, new_sn, uid3)
+            # auth = 0
+            print("Auth: %08X" % (auth))
+            try:
+                # Write NewSN to device using DAuth Method
+                tran.execute(WriteSNAuth(dev, bytes(new_sn.encode('utf-8')), auth))
+                tprint("OK")
+            except LinkTimeoutException:
+                tprint("Timeout !")
+
+        if self.snmeth is 'regs':
+            try:
+                # Write NewSN to ESC using Regs Method
+                tran.execute(WriteSNRegs(bytes(new_sn.encode('utf-8'))))
+                tprint("OK")
+            except LinkTimeoutException:
+                tprint("Timeout !")
 
         # save config and restart
         tran.execute(WriteRegs(BT.ESC, 0x78, "<H", 0x01))
@@ -142,8 +161,10 @@ class Command:
         self.old_sn = tran.execute(ReadRegs(BT.ESC, 0x10, "14s"))[0]
         if self.old_sn is new_sn:
             tprint('SN Change Successful')
-        else:
+        elif self.snmeth is 'regs':
             tprint('Did you flash DRV777 first?')
+        elif self.snmeth is 'dauth':
+            tprint("Do you know what you're doing?")
 
     def pp_distance(dist):
         if dist < 1000:
