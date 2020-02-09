@@ -106,6 +106,7 @@ class Client(EventDispatcher):
                     transport.keys = link.fetch_keys()
                     transport.recover_keys()
                     tprint('Keys recovered')
+                    tprint('functionality may be limited for now')
 
             self._tran = transport
             self._link = link
