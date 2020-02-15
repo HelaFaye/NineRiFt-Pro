@@ -48,12 +48,16 @@ class Command:
         tprint(self.snmeth+' selected for ChangeSN method')
 
     def dump(self, device):
-        dev = {
-            'esc': BT.ESC,
-            'ble': BT.BLE,
-            'bms': BT.BMS,
-            'extbms': BT.EXTBMS,
-        }[device]
+        if device:
+            dev = {
+                'esc': BT.ESC,
+                'ble': BT.BLE,
+                'bms': BT.BMS,
+                'extbms': BT.EXTBMS,
+            }[device]
+        else:
+            tprint('select device first')
+
         with self.conn._tran as tran:
             for offset in range(256):
                 try:
@@ -127,18 +131,21 @@ class Command:
             cprint('No external BMS found', repr(exc))
 
     def changesn(self, new_sn):
-        dev = {
-            'esc': BT.ESC,
-            'ble': BT.BLE,
-            'bms': BT.BMS,
-            'extbms': BT.EXTBMS,
-        }[self.device]
 
         tran = self.conn._tran
         old_sn = tran.execute(ReadRegs(BT.ESC, 0x10, "14s"))[0].decode()
 
         if self.snmeth is 'dauth':
             from py9b.command.mfg import CalcSnAuth, WriteSNAuth
+            if self.device is not '':
+                dev = {
+                    'esc': BT.ESC,
+                    'ble': BT.BLE,
+                    'bms': BT.BMS,
+                    'extbms': BT.EXTBMS,
+                }[self.device]
+            else:
+                tprint('pick a device first')
             uid3 = tran.execute(ReadRegs(dev, 0xDE, "<L"))[0]
             cprint("UID3: %08X" % (uid3))
 
