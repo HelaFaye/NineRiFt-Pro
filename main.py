@@ -51,7 +51,8 @@ class NineRiFt(App):
         self.conn = Client()
         self.conn.bind(on_error=lambda a,b: tprint(b))
 
-        self.com = Command(self.conn)
+        self.cmdout = StringProperty('')
+        self.com = Command(self.conn, self.cmdout)
         self.fwupd = FWUpd(self.conn)
         self.fwget = FWGet(self.cache_folder)
 

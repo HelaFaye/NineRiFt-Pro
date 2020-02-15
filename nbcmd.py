@@ -18,11 +18,22 @@ def tprint(msg):
 
 
 class Command:
-    def __init__(self, conn):
+    def __init__(self, conn, cout):
         self.new_sn = ''
         self.device = ''
         self.snmeth = ''
         self.conn = conn
+
+    def cprint(msg, cout):
+        cout.append(msg+'/n')
+        print(cout)
+
+    def print_reg(self, tran, desc, reg, format, dev=BT.ESC):
+        try:
+            data = tran.execute(ReadRegs(dev, reg, format))
+            cprint(desc % data)
+        except Exception as exc:
+            cprint(desc, repr(exc))
 
     def setdev(self, d):
         self.device = d.lower()
@@ -46,9 +57,9 @@ class Command:
         with self.conn._tran as tran:
             for offset in range(256):
                 try:
-                    tprint('0x%02x: %04x' % (offset, tran.execute(ReadRegs(dev, offset, "<H"))[0]))
+                    cprint('0x%02x: %04x' % (offset, tran.execute(ReadRegs(dev, offset, "<H"))[0]))
                 except Exception as exc:
-                    tprint('0x%02x: %s' % (offset, exc))
+                    cprint('0x%02x: %s' % (offset, exc))
 
     def sniff(self):
         tran = self.conn._tran
@@ -80,65 +91,60 @@ class Command:
         tran.execute(WriteRegs(BT.ESC, 0x78, "<H", 0x0001))
         tprint('Done')
 
-    def print_reg(self, tran, desc, reg, format, dev=BT.ESC):
-        try:
-            data = tran.execute(ReadRegs(dev, reg, format))
-            tprint(desc % data)
-        except Exception as exc:
-            tprint(desc, repr(exc))
-
     def bms_info(self, tran, dev):
-        #tprint('BMS S/N:         %s' % tran.execute(ReadRegs(dev, 0x10, "14s"))[0].decode())
+        cprint('BMS S/N:         %s' % tran.execute(ReadRegs(dev, 0x10, "14s"))[0].decode())
         print_reg(tran, 'BMS Version:     %04x', 0x17, "<H", dev=dev)
-        #print_reg(tran, 'BMS charge:      %d%%', 0x32, "<H", dev=dev)
-        #print_reg(tran, 'BMS full cycles: %d', 0x1b, "<H", dev=dev)
-        #print_reg(tran, 'BMS charges:     %d', 0x1c, "<H", dev=dev)
-        #print_reg(tran, 'BMS health:      %d%%', 0x3b, "<H", dev=dev)
-        #tprint('BMS current:     %.2fA' % (tran.execute(ReadRegs(dev, 0x33, "<h"))[0] / 100.0,))
-        #tprint('BMS voltage:     %.2fV' % (tran.execute(ReadRegs(dev, 0x34, "<h"))[0] / 100.0,))
+        print_reg(tran, 'BMS charge:      %d%%', 0x32, "<H", dev=dev)
+        print_reg(tran, 'BMS full cycles: %d', 0x1b, "<H", dev=dev)
+        print_reg(tran, 'BMS charges:     %d', 0x1c, "<H", dev=dev)
+        print_reg(tran, 'BMS health:      %d%%', 0x3b, "<H", dev=dev)
+        cprint('BMS current:     %.2fA' % (tran.execute(ReadRegs(dev, 0x33, "<h"))[0] / 100.0,))
+        cprint('BMS voltage:     %.2fV' % (tran.execute(ReadRegs(dev, 0x34, "<h"))[0] / 100.0,))
 
     def info(self):
         tran = self.conn._tran
-        tprint('ESC S/N:       %s' % tran.execute(ReadRegs(BT.ESC, 0x10, "14s"))[0].decode())
-        #tprint('ESC PIN:       %s' % tran.execute(ReadRegs(BT.ESC, 0x17, "6s"))[0].decode())
-        time.sleep(1)
+        cprint('ESC S/N:       %s' % tran.execute(ReadRegs(BT.ESC, 0x10, "14s"))[0].decode())
+        cprint('ESC PIN:       %s' % tran.execute(ReadRegs(BT.ESC, 0x17, "6s"))[0].decode())
         print_reg(tran, 'BLE Version:   %04x', 0x68, "<H")
-        time.sleep(1)
         print_reg(tran, 'ESC Version:   %04x', 0x1A, "<H")
-        #print_reg(tran, 'Error code:    %d', 0x1B, "<H")
-        #print_reg(tran, 'Warning code:  %d', 0x1C, "<H")
-        #tprint('Total mileage: %s' % pp_distance(tran.execute(ReadRegs(BT.ESC, 0x29, "<L"))[0]))
-        #tprint('Total runtime: %s' % pp_time(tran.execute(ReadRegs(BT.ESC, 0x32, "<L"))[0]))
-        #tprint('Total riding:  %s' % pp_time(tran.execute(ReadRegs(BT.ESC, 0x34, "<L"))[0]))
-        #tprint('Chassis temp:  %d C' % (tran.execute(ReadRegs(BT.ESC, 0x3e, "<H"))[0] / 10.0,))
+        print_reg(tran, 'Error code:    %d', 0x1B, "<H")
+        print_reg(tran, 'Warning code:  %d', 0x1C, "<H")
+        cprint('Total mileage: %s' % pp_distance(tran.execute(ReadRegs(BT.ESC, 0x29, "<L"))[0]))
+        cprint('Total runtime: %s' % pp_time(tran.execute(ReadRegs(BT.ESC, 0x32, "<L"))[0]))
+        cprint('Total riding:  %s' % pp_time(tran.execute(ReadRegs(BT.ESC, 0x34, "<L"))[0]))
+        cprint('Chassis temp:  %d C' % (tran.execute(ReadRegs(BT.ESC, 0x3e, "<H"))[0] / 10.0,))
 
         try:
-            time.sleep(1)
-            tprint(' *** Internal BMS ***')
+            cprint(' *** Internal BMS ***')
             bms_info(tran, BT.BMS)
         except Exception as exc:
-            time.sleep(1)
-            tprint('No internal BMS found', repr(exc))
+            cprint('No internal BMS found', repr(exc))
 
         try:
-            time.sleep(1)
-            tprint(' *** External BMS ***')
+            cprint(' *** External BMS ***')
             bms_info(tran, BT.EXTBMS)
         except Exception as exc:
-            time.sleep(1)
-            tprint('No external BMS found', repr(exc))
+            cprint('No external BMS found', repr(exc))
 
     def changesn(self, new_sn):
+        dev = {
+            'esc': BT.ESC,
+            'ble': BT.BLE,
+            'bms': BT.BMS,
+            'extbms': BT.EXTBMS,
+        }[self.device]
+
         tran = self.conn._tran
         old_sn = tran.execute(ReadRegs(BT.ESC, 0x10, "14s"))[0].decode()
 
         if self.snmeth is 'dauth':
+            from py9b.command.mfg import CalcSnAuth, WriteSNAuth
             uid3 = tran.execute(ReadRegs(dev, 0xDE, "<L"))[0]
-            print("UID3: %08X" % (uid3))
+            cprint("UID3: %08X" % (uid3))
 
             auth = CalcSnAuth(old_sn, new_sn, uid3)
             # auth = 0
-            print("Auth: %08X" % (auth))
+            cprint("Auth: %08X" % (auth))
             try:
                 # Write NewSN to device using DAuth Method
                 tran.execute(WriteSNAuth(dev, bytes(new_sn.encode('utf-8')), auth))
@@ -147,6 +153,7 @@ class Command:
                 tprint("Timeout !")
 
         if self.snmeth is 'regs':
+            from py9b.command.mfg import WriteSNRegs
             try:
                 # Write NewSN to ESC using Regs Method
                 tran.execute(WriteSNRegs(bytes(new_sn.encode('utf-8'))))
