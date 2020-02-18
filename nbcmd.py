@@ -156,7 +156,7 @@ class Command:
             cprint("Auth: %08X" % (auth), self.cout)
             try:
                 # Write NewSN to device using DAuth Method
-                tran.execute(WriteSNAuth(dev, bytes(new_sn.encode('utf-8')), auth))
+                tran.execute(WriteSNAuth(dev, new_sn.encode('utf-8'), auth))
                 tprint("OK")
             except LinkTimeoutException:
                 tprint("Timeout !")
@@ -164,7 +164,7 @@ class Command:
         if self.snmeth is 'wregs':
             try:
                 # Write NewSN to ESC using Regs Method
-                tran.execute(WriteRegs(BT.ESC, 0x10, "<14sL", bytes(new_sn.encode('utf-8'))))
+                tran.execute(WriteRegs(BT.ESC, 0x10, "<14sL", new_sn.encode('utf-8')))
                 tprint("OK")
             except LinkTimeoutException:
                 tprint("Timeout !")
