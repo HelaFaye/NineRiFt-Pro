@@ -1,39 +1,42 @@
 GridLayout:
-    cols: 1
-    rows: 2
+    rows: 3
+    cols: 1 
     GridLayout:
-        rows: 4
-        cols: 1
-        size_hint_y: .15
+        rows: 1
+        cols: 2
+        size_hint_y: .10
         Spinner:
             id: snmeth
             text: "Method"
             font_size: '12sp'
             height: '12sp'
-            size_hint_y: .15
-            values: ['dauth','regs']
+            size_hint_x: .5
+            values: ['dauth','wregs']
             on_text: app.com.setsnmethod(self.text)
         Spinner:
             id: sndevsel
             text: "Device"
             font_size: '12sp'
             height: '12sp'
-            size_hint_y: .15
+            size_hint_x: .5
             values: ['esc','bms','extbms']
             on_text: app.com.setdev(self.text)
             disabled: snmeth.text != 'dauth'
+    GridLayout:
+        rows: 1
+        cols: 2
+        size_hint_y: .15
         Label:
             font_size: '12sp'
-            height: '12sp'
-            size_hint_y: .15
+            size_hint_x: .12
             text: "NewSN:"
         TextInput:
             id: newsntext
             multiline: False
             font_size: '12sp'
             height: '12sp'
-            size_hint_y: .15
+            size_hint_x: .88
             on_text_validate: app.com.setnewsn(self.text)
             font_size: '12sp'
     BoxLayout:
-        size_hint_y: .4
+        size_hint_y: .75

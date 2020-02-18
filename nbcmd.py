@@ -2,6 +2,7 @@ import time
 from py9b.link.base import LinkTimeoutException
 from py9b.transport.base import BaseTransport as BT
 from py9b.command.regio import ReadRegs, WriteRegs
+from py9b.command.mfg import *
 
 from kivy.utils import platform
 try:
@@ -23,10 +24,11 @@ class Command:
         self.device = ''
         self.snmeth = ''
         self.conn = conn
+        self.cout = cout
 
-    def cprint(msg, cout):
-        cout.append(msg+'/n')
-        print(cout)
+    def cprint(self, msg):
+        self.cout.append(msg+'/n')
+        print(self.cout)
 
     def print_reg(self, tran, desc, reg, format, dev=BT.ESC):
         try:
@@ -136,7 +138,6 @@ class Command:
         old_sn = tran.execute(ReadRegs(BT.ESC, 0x10, "14s"))[0].decode()
 
         if self.snmeth is 'dauth':
-            from py9b.command.mfg import CalcSnAuth, WriteSNAuth
             if self.device is not '':
                 dev = {
                     'esc': BT.ESC,
@@ -159,8 +160,7 @@ class Command:
             except LinkTimeoutException:
                 tprint("Timeout !")
 
-        if self.snmeth is 'regs':
-            from py9b.command.mfg import WriteSNRegs
+        if self.snmeth is 'wregs':
             try:
                 # Write NewSN to ESC using Regs Method
                 tran.execute(WriteSNRegs(bytes(new_sn.encode('utf-8'))))
