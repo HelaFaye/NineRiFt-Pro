@@ -164,7 +164,7 @@ class Command:
         if self.snmeth is 'wregs':
             try:
                 # Write NewSN to ESC using Regs Method
-                tran.execute(WriteSNRegs(BT.ESC, bytes(new_sn.encode('utf-8'))))
+                tran.execute(WriteRegs(BT.ESC, 0x10, "<14sL", bytes(new_sn.encode('utf-8'))))
                 tprint("OK")
             except LinkTimeoutException:
                 tprint("Timeout !")
