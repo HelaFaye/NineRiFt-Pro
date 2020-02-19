@@ -17,7 +17,7 @@ def tprint(msg):
     except:
         print(msg)
 
-def cprint(self, msg, cout):
+def cprint(msg, cout):
     cout.append(msg+'/n')
     print(cout)
 
