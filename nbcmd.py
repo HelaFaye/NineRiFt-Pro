@@ -18,7 +18,7 @@ def tprint(msg):
         print(msg)
 
 def cprint(msg, cout):
-    cout+=msg+'/n'
+    cout+=msg+''
     print(cout)
 
 class Command:
